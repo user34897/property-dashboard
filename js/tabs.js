@@ -3,7 +3,7 @@
   'use strict';
 
   const { esc, money, moneyShort, pct, signedPct, num, days, date, mean, median, vals, groupBy, plural } = F;
-  const { kpi, kpis, card, chartBox, barsHeight, missingNotice, empty, link, renderTable, method, methodCounts, methodBreakdown, methodRows } = UI;
+  const { kpi, kpis, card, chartBox, barsHeight, missingNotice, empty, link, renderTable, method, methodCounts, methodRows } = UI;
   const SMALL = 5;   // groups with fewer sales than this are marked "small sample"
 
   // ---------- shared sums ----------
@@ -65,6 +65,7 @@
     const s = summarise(recs);
     if (!recs.length) { panel.innerHTML = empty(); return; }
 
+    const m = s.methods;
     const tiles = kpis([
       kpi('Properties', num(s.count), 'matching the filters'),
       kpi('Sold', num(s.soldCount), `worth ${moneyShort(s.total)} in total`),
@@ -73,8 +74,15 @@
       kpi('Average sold price', money(s.mean), 'all sold prices added up ÷ number sold'),
       kpi('Average $ per m²', money(s.ppsqm), 'sold price ÷ land size'),
       kpi('Average days on market', days(s.dom), 'from listing date to sold date'),
-      kpi('Prediction accuracy', s.mape !== null ? pct(1 - s.mape) : '–', s.mape !== null ? `your guesses were ${pct(s.mape)} away on average` : 'no predictions to compare')
+      kpi('Prediction accuracy', s.mape !== null ? pct(1 - s.mape) : '–', s.mape !== null ? `your guesses were ${pct(s.mape)} away on average` : 'no predictions to compare'),
+      ...['auction', 'before', 'private'].map((k) => kpi(DataReader.METHODS[k], num(m[k]),
+        `${m.sold ? pct(m.share(k), 0) : '–'} of sold${k === 'private' && m.passedIn ? `<br>(${num(m.passedIn)} passed in at auction first)` : ''}`, { dot: k }))
     ]);
+    // Small print under the tiles: what the three "how sold" tiles count, and why they can differ from "Sold".
+    const gap = m.sold - s.soldCount;
+    const tilesNote = `How sold follows the Status column; “% of sold” is out of the ${num(m.sold)} properties it marks as sold. Not sold yet: ${num(m.notsold)}.`
+      + (gap > 0 ? ` The “Sold” tile shows ${num(s.soldCount)} because it counts sold prices: ${plural(gap, 'property has', 'properties have')} a sold Status but no sold price (see Data Check).` : '')
+      + (gap < 0 ? ` The “Sold” tile shows ${num(s.soldCount)} because it counts sold prices, and ${plural(-gap, 'property has', 'properties have')} a sold price but an unrecognised Status (see Data Check).` : '');
 
     // Monthly
     const withMonth = s.sold.filter((r) => r.soldMonth);
@@ -87,9 +95,7 @@
       ${missingNotice(ds, ['sold'], 'sold prices')}
       ${missingNotice(ds, ['listingDate'], 'days on market')}
       ${tiles}
-      ${card('How properties sold', methodBreakdown(s.methods) + (s.methods.sold !== s.soldCount
-        ? `<p class="mb-foot muted">Why ${num(s.methods.sold)} here but ${num(s.soldCount)} in the “Sold” figure above? That figure counts properties with a sold price; this one follows the Status column. A few properties have a Status that says they sold, but no sold price, so they aren’t in the “Sold” figure. They’re listed in Data Check under “Looks sold, but has no sold price”.</p>` : ''),
-        'Based on the Status column. “Sold privately” includes properties that were passed in at auction and then sold privately. Percentages are of sold properties only.')}
+      <p class="tiles-note">${tilesNote}</p>
       ${card('Key insights', `<ul class="insights">${insights(recs, s).map((t) => `<li>${t}</li>`).join('')}</ul>`, '', 'card-insights')}
       ${months.length ? `<div class="grid-2">
         ${card('Sales per month', chartBox('ch-month-count', 240), 'Each bar is the number of properties sold that month. Taller bars mean a busier month.')}

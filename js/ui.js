@@ -6,8 +6,10 @@
   const esc = F.esc;
 
   // ---------- headline figure tiles ----------
-  function kpi(label, value, sub) {
-    return `<div class="kpi"><div class="kpi-label">${esc(label)}</div><div class="kpi-value">${value}</div>${sub ? `<div class="kpi-sub">${sub}</div>` : ''}</div>`;
+  /** opts.dot: a sale method key ("auction" etc.) to show its coloured dot before the label. */
+  function kpi(label, value, sub, opts = {}) {
+    const dot = opts.dot ? `<span class="mb-key m-${opts.dot}" aria-hidden="true"></span> ` : '';
+    return `<div class="kpi"><div class="kpi-label">${dot}${esc(label)}</div><div class="kpi-value">${value}</div>${sub ? `<div class="kpi-sub">${sub}</div>` : ''}</div>`;
   }
   const kpis = (items) => `<div class="kpi-grid">${items.join('')}</div>`;
 
@@ -164,24 +166,6 @@
     return c;
   }
 
-  const passedNote = (c) => (c.passedIn ? ` <span class="mb-note">(${F.num(c.passedIn)} passed in at auction first)</span>` : '');
-
-  /** One bar split into the three ways of selling, with a labelled key underneath. */
-  function methodBreakdown(c) {
-    if (!c.sold) return `<p class="empty">No sold properties with a recognised Status.</p>`;
-    const label = METHOD_KEYS.map((k) => `${DataReader.METHODS[k]} ${F.pct(c.share(k), 0)}`).join(', ');
-    return `<div class="mb">
-      <div class="mb-bar" role="img" aria-label="${esc(label)}">
-        ${METHOD_KEYS.filter((k) => c[k]).map((k) => `<span class="mb-seg m-${k}" style="flex-grow:${c[k]}"></span>`).join('')}
-      </div>
-      <ul class="mb-legend">
-        ${METHOD_KEYS.map((k) => `<li><span class="mb-key m-${k}" aria-hidden="true"></span><span class="mb-name">${DataReader.METHODS[k]}</span>
-          <span class="mb-count">${F.num(c[k])}${k === 'private' ? passedNote(c) : ''}</span><span class="mb-pct">${F.pct(c.share(k), 0)}</span></li>`).join('')}
-      </ul>
-      <p class="mb-foot">${F.plural(c.sold, 'property', 'properties')} sold. <strong>Not sold yet: ${F.num(c.notsold)}</strong> (still for sale, so not included in the percentages).${c.unknown ? ` ${F.num(c.unknown)} with an unrecognised Status left out (see Data Check).` : ''}</p>
-    </div>`;
-  }
-
   /** A short split bar for each row (e.g. each agency), sharing one key. rows: [{ label, counts }] */
   function methodRows(rows) {
     const key = METHOD_KEYS.map((k) => `<span class="mb-legend-item"><span class="mb-key m-${k}" aria-hidden="true"></span>${DataReader.METHODS[k]}</span>`).join('');
@@ -225,5 +209,5 @@
   });
   window.addEventListener('scroll', hideTip, true);
 
-  window.UI = { kpi, kpis, card, chartBox, barsHeight, missingNotice, empty, link, renderTable, multiSelect, method, methodCounts, methodBreakdown, methodRows };
+  window.UI = { kpi, kpis, card, chartBox, barsHeight, missingNotice, empty, link, renderTable, multiSelect, method, methodCounts, methodRows };
 })();

@@ -292,6 +292,9 @@ input[type="number"], input[type="date"], input[type="search"], select {
 .kpi-value { font-size: 1.6rem; font-weight: 700; margin: .15rem 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .kpi-sub { font-size: .8rem; color: var(--muted); }
 
+.tiles-note { margin: .5rem 0 0; color: var(--muted); font-size: .82rem; max-width: 110ch; }
+.panel > .tiles-note { margin-top: .5rem; }
+.kpi-label .mb-key { margin-right: .1rem; }
 .insights { margin: 0; padding-left: 1.2rem; }
 .insights li + li { margin-top: .4rem; }
 .notes { margin: 0; padding-left: 1.2rem; font-size: .92rem; }
@@ -340,14 +343,6 @@ input[type="number"], input[type="date"], input[type="search"], select {
 .mb-bar-sm { height: 16px; border-radius: 4px; }
 .mb-seg { min-width: 3px; }
 .mb-key { display: inline-block; width: .75em; height: .75em; border-radius: 3px; flex: none; vertical-align: -.05em; }
-.mb-legend { list-style: none; margin: .9rem 0 0; padding: 0; display: grid; gap: .35rem; }
-.mb-legend li { display: grid; grid-template-columns: auto 1fr auto auto; gap: .6rem; align-items: baseline; padding: .3rem 0; border-bottom: 1px solid var(--border); }
-.mb-legend li .mb-key { align-self: center; }
-.mb-name { font-weight: 600; }
-.mb-count, .mb-pct { font-variant-numeric: tabular-nums; text-align: right; }
-.mb-pct { min-width: 3.2em; font-weight: 700; }
-.mb-note { color: var(--muted); font-size: .85rem; }
-.mb-foot { margin: .75rem 0 0; color: var(--text-2); font-size: .9rem; }
 .mb-key-row { display: flex; flex-wrap: wrap; gap: .4rem 1rem; font-size: .85rem; color: var(--text-2); margin-bottom: .6rem; }
 .mb-legend-item { display: inline-flex; align-items: center; gap: .35rem; }
 .mr { display: grid; gap: .45rem; }
