@@ -66,13 +66,12 @@
     if (!recs.length) { panel.innerHTML = empty(); return; }
 
     const m = s.methods;
-    const tiles = kpis([
+    const tiles = kpis('kpi-grid-5', [
       kpi('Properties', num(s.count), 'matching the filters'),
       kpi('Sold', num(s.soldCount), `worth ${moneyShort(s.total)} in total`),
       kpi('Sold rate', pct(s.soldCount / s.count, 0), 'of these properties have sold'),
       kpi('Median sold price', money(s.median), 'the middle price — half sold for more, half for less'),
       kpi('Average sold price', money(s.mean), 'all sold prices added up ÷ number sold'),
-      kpi('Average $ per m²', money(s.ppsqm), 'sold price ÷ land size'),
       kpi('Average days on market', days(s.dom), 'from listing date to sold date'),
       kpi('Prediction accuracy', s.mape !== null ? pct(1 - s.mape) : '–', s.mape !== null ? `your guesses were ${pct(s.mape)} away on average` : 'no predictions to compare'),
       ...['auction', 'before', 'private'].map((k) => kpi(DataReader.METHODS[k], num(m[k]),

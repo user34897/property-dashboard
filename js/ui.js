@@ -11,7 +11,11 @@
     const dot = opts.dot ? `<span class="mb-key m-${opts.dot}" aria-hidden="true"></span> ` : '';
     return `<div class="kpi"><div class="kpi-label">${dot}${esc(label)}</div><div class="kpi-value">${value}</div>${sub ? `<div class="kpi-sub">${sub}</div>` : ''}</div>`;
   }
-  const kpis = (items) => `<div class="kpi-grid">${items.join('')}</div>`;
+  /** A grid of tiles. Pass an extra class first to change the layout, e.g. kpis('kpi-grid-5', [...]). */
+  const kpis = (...args) => {
+    const [cls, items] = args.length > 1 ? args : ['', args[0]];
+    return `<div class="kpi-grid ${cls}">${items.join('')}</div>`;
+  };
 
   // ---------- section card with a title and plain-English explanation ----------
   function card(title, body, explain, extraClass) {

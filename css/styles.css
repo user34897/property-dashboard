@@ -287,6 +287,8 @@ input[type="number"], input[type="date"], input[type="search"], select {
 
 /* headline tiles */
 .kpi-grid { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+/* Overview headline tiles: two neat rows of five on a computer screen */
+@media (min-width: 1024px) { .kpi-grid-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: .85rem 1rem; box-shadow: var(--shadow); min-width: 0; }
 .kpi-label { font-size: .85rem; color: var(--text-2); font-weight: 600; }
 .kpi-value { font-size: 1.6rem; font-weight: 700; margin: .15rem 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
